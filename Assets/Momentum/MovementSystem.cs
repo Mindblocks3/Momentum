@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Mirror.Momentum.Snapshot;
-
-namespace Mirror.Momentum
+using static Mirage.Momentum.Snapshot;
+using Mirage;
+namespace Mirage.Momentum
 {
 
     /// <summary>
@@ -16,6 +16,7 @@ namespace Mirror.Momentum
     {
         public int SnapshotPerSecond = 30;
 
+        NetworkWorld world;
         public ClientObjectManager ClientObjectManager;
         public ServerObjectManager ServerObjectManager;
 
@@ -29,8 +30,8 @@ namespace Mirror.Momentum
 
         private void InitServer()
         {
-            ServerObjectManager.Spawned.AddListener(Spawned);
-            ServerObjectManager.UnSpawned.AddListener(UnSpawned);
+            world.onSpawn.AddListener(Spawned);
+            world.onUnspawn.AddListener(UnSpawned);
 
             ServerObjectManager.Server.Started.AddListener(OnStartServer);
             ServerObjectManager.Server.Stopped.AddListener(OnStopServer);
@@ -137,7 +138,7 @@ namespace Mirror.Momentum
             clientLastSnapshotTime = null;
         }
 
-        private void OnClientConnected(INetworkConnection connection)
+        private void OnClientConnected(INetworkPlayer connection)
         {
             connection.RegisterHandler<Snapshot>(OnReceiveSnapshot);
         }
@@ -146,7 +147,7 @@ namespace Mirror.Momentum
 
         // we will interpolate from this snapshot to the next snapshot
 
-        private void OnReceiveSnapshot(INetworkConnection arg1, Snapshot snapshot)
+        private void OnReceiveSnapshot(INetworkPlayer arg1, Snapshot snapshot)
         {
             // ignore messages in host mode
             if (ClientObjectManager.Client.IsLocalClient)

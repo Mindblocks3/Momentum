@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace Mirror.Momentum
+namespace Mirage.Momentum
 {
     internal class MovementSync : NetworkBehaviour, IComparable<MovementSync>
     {
