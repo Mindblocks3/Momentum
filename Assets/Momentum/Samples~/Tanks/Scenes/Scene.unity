@@ -151,6 +151,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 721760295}
   m_RootOrder: 0
@@ -290,6 +291,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0.92387956, z: -0.38268343, w: 0}
   m_LocalPosition: {x: 0, y: 6.5, z: 8}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -320,6 +322,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 6
@@ -352,6 +355,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1986496790}
   m_RootOrder: 0
@@ -429,6 +433,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 3, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -461,6 +466,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 607305578}
   m_RootOrder: 0
@@ -540,6 +546,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 597109995}
   m_Father: {fileID: 1966128035}
@@ -620,6 +627,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1162041874}
   m_Father: {fileID: 1273045296}
@@ -700,6 +708,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1278248529}
   m_Father: {fileID: 1273045296}
@@ -781,6 +790,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 20677887}
   m_Father: {fileID: 944343261}
@@ -913,6 +923,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1986496790}
   m_RootOrder: 1
@@ -991,6 +1002,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1117608593}
   - {fileID: 1986496790}
@@ -1041,6 +1053,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -1103,6 +1116,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
@@ -1135,6 +1149,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 944343261}
   m_RootOrder: 0
@@ -1215,6 +1230,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922471169038003}
   m_RootOrder: 0
@@ -1309,6 +1325,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 637114754}
   m_RootOrder: 0
@@ -1464,6 +1481,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -1477,6 +1495,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 944343261}
   - {fileID: 721152071}
@@ -1519,6 +1538,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 721152071}
   m_RootOrder: 0
@@ -1583,7 +1603,6 @@ GameObject:
   - component: {fileID: 1282001523}
   - component: {fileID: 1282001521}
   - component: {fileID: 1282001525}
-  - component: {fileID: 1282001526}
   - component: {fileID: 1282001519}
   - component: {fileID: 1282001522}
   - component: {fileID: 1282001524}
@@ -1606,6 +1625,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 3
@@ -1622,7 +1642,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b3fbf0a5cb914b1c9bbb8a42e081f4bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Started:
+  Stopped:
     m_PersistentCalls:
       m_Calls: []
   Port: 9777
@@ -1644,7 +1664,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Server: {fileID: 1282001523}
   Client: {fileID: 1282001525}
-  SceneManager: {fileID: 1282001526}
   ServerObjectManager: {fileID: 1282001524}
   ClientObjectManager: {fileID: 1282001522}
 --- !u!114 &1282001521
@@ -1661,10 +1680,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Client: {fileID: 1282001525}
   Server: {fileID: 1282001523}
-  SceneManager: {fileID: 1282001526}
   ClientObjectManager: {fileID: 1282001522}
   ServerObjectManager: {fileID: 1282001524}
   PlayerPrefab: {fileID: 114118589361100106, guid: 6f43bf5488a7443d19ab2a83c6b91f35, type: 3}
+  AutoSpawn: 1
   startPositionIndex: 0
   startPositions:
   - {fileID: 535739936}
@@ -1685,13 +1704,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Client: {fileID: 1282001525}
-  NetworkSceneManager: {fileID: 1282001526}
-  Spawned:
-    m_PersistentCalls:
-      m_Calls: []
-  UnSpawned:
-    m_PersistentCalls:
-      m_Calls: []
   spawnPrefabs:
   - {fileID: 1713098107664522388, guid: b7dd46dbf38c643f09e206f9fa4be008, type: 3}
   - {fileID: 114118589361100106, guid: 6f43bf5488a7443d19ab2a83c6b91f35, type: 3}
@@ -1708,30 +1720,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MaxConnections: 4
-  Started:
-    m_PersistentCalls:
-      m_Calls: []
-  Connected:
-    m_PersistentCalls:
-      m_Calls: []
-  Authenticated:
-    m_PersistentCalls:
-      m_Calls: []
-  Disconnected:
-    m_PersistentCalls:
-      m_Calls: []
-  Stopped:
-    m_PersistentCalls:
-      m_Calls: []
-  OnStartHost:
-    m_PersistentCalls:
-      m_Calls: []
-  OnStopHost:
-    m_PersistentCalls:
-      m_Calls: []
-  authenticator: {fileID: 0}
   Listening: 1
   Transport: {fileID: 1282001519}
+  authenticator: {fileID: 0}
+  _started:
+    m_PersistentCalls:
+      m_Calls: []
+  _connected:
+    m_PersistentCalls:
+      m_Calls: []
+  _authenticated:
+    m_PersistentCalls:
+      m_Calls: []
+  _disconnected:
+    m_PersistentCalls:
+      m_Calls: []
+  _stopped:
+    m_PersistentCalls:
+      m_Calls: []
+  _onStartHost:
+    m_PersistentCalls:
+      m_Calls: []
+  _onStopHost:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1282001524
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1745,13 +1757,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Server: {fileID: 1282001523}
-  NetworkSceneManager: {fileID: 1282001526}
-  Spawned:
-    m_PersistentCalls:
-      m_Calls: []
-  UnSpawned:
-    m_PersistentCalls:
-      m_Calls: []
 --- !u!114 &1282001525
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,41 +1769,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: abe6be14204d94224a3e7cd99dd2ea73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  authenticator: {fileID: 0}
-  Connected:
-    m_PersistentCalls:
-      m_Calls: []
-  Authenticated:
-    m_PersistentCalls:
-      m_Calls: []
-  Disconnected:
-    m_PersistentCalls:
-      m_Calls: []
   Transport: {fileID: 1282001519}
---- !u!114 &1282001526
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1282001517}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30967dfd80dbb6c46a270a64ebecb951, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Client: {fileID: 1282001525}
-  Server: {fileID: 1282001523}
-  ClientChangeScene:
+  authenticator: {fileID: 0}
+  _connected:
     m_PersistentCalls:
       m_Calls: []
-  ClientSceneChanged:
+  _authenticated:
     m_PersistentCalls:
       m_Calls: []
-  ServerChangeScene:
-    m_PersistentCalls:
-      m_Calls: []
-  ServerSceneChanged:
+  _disconnected:
     m_PersistentCalls:
       m_Calls: []
 --- !u!114 &1282001527
@@ -1814,57 +1793,73 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Levels:
-  - Name: ClientObjectManager
-    level: 2
-  - Name: RemoteCallHelper
+  - Name: NetworkIdentity
     level: 2
   - Name: NetworkBehaviour
-    level: 2
-  - Name: ServerObjectManager
     level: 2
   - Name: NetworkClient
     level: 2
   - Name: NetworkTime
     level: 2
-  - Name: NetworkIdentity
+  - Name: CharacterSpawner
+    level: 2
+  - Name: ClientObjectManager
     level: 2
   - Name: NetworkServer
+    level: 2
+  - Name: ServerObjectManager
+    level: 2
+  - Name: RemoteCallHelper
+    level: 2
+  - Name: NetworkProximityChecker
+    level: 2
+  - Name: NetworkBehaviourInspector
     level: 2
   - Name: NetworkSceneManager
     level: 2
   - Name: PlayerSpawner
     level: 2
-  - Name: NetworkBehaviourInspector
+  - Name: WelcomeWindow
     level: 2
-  - Name: EnterPlayModeSettingsCheck
+  - Name: NetworkReaderExtensions
     level: 2
   - Name: NetworkScenePostProcess
     level: 2
-  - Name: NetworkConnection
+  - Name: NetworkWorld
     level: 2
-  - Name: NetworkReaderExtensions
+  - Name: NetworkPlayer
+    level: 3
+  - Name: SyncVarReceiver
     level: 2
   - Name: NetworkWriterPool
     level: 2
   - Name: NetworkReaderPool
     level: 2
+  - Name: KcpConnection
+    level: 2
+  - Name: 
+    level: 0
   - Name: BasicAuthenticator
     level: 2
   - Name: NetworkRigidbody
-    level: 2
-  - Name: NetworkProximityChecker
-    level: 2
-  - Name: NetworkAnimator
-    level: 2
-  - Name: NetworkSceneChecker
-    level: 2
-  - Name: Reward
     level: 2
   - Name: HeadlessFrameLimiter
     level: 2
   - Name: LogFactoryTests
     level: 2
   - Name: NetworkManager
+    level: 2
+  - Name: Tests
+    level: 4
+  - Name: EnterPlayModeSettingsCheck
+    level: 2
+  - Name: NetworkConnection
+    level: 2
+  - Name: NetworkAnimator
+    level: 2
+  - Name: NetworkSceneChecker
+    level: 2
+  - Name: Reward
     level: 2
   - Name: WeaverTests
     level: 4
@@ -1880,10 +1875,6 @@ MonoBehaviour:
     level: 2
   - Name: NetworkDiscoveryBase`2
     level: 2
-  - Name: KcpConnection
-    level: 2
-  - Name: Tests
-    level: 4
 --- !u!114 &1282001528
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1897,9 +1888,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   SnapshotPerSecond: 10
-  ClientObjectManager: {fileID: 1282001522}
-  ServerObjectManager: {fileID: 1282001524}
-  Trace: 0
+  Client: {fileID: 1282001525}
+  Server: {fileID: 1282001523}
 --- !u!1 &1458789072
 GameObject:
   m_ObjectHideFlags: 0
@@ -1926,6 +1916,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 7
@@ -1956,6 +1947,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -3, y: 0, z: -3}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 5
@@ -1992,6 +1984,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_MoveRepeatDelay: 0.5
   m_MoveRepeatRate: 0.1
+  m_XRTrackingOrigin: {fileID: 0}
   m_ActionsAsset: {fileID: -944628639613478452, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_PointAction: {fileID: 1054132383583890850, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_MoveAction: {fileID: 3710738434707379630, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
@@ -2005,6 +1998,7 @@ MonoBehaviour:
   m_TrackedDeviceOrientationAction: {fileID: 1025543830046995696, guid: ca9f5fa95ffab41fb9a615ab714db018, type: 3}
   m_DeselectOnBackgroundClick: 1
   m_PointerBehavior: 0
+  m_CursorLockBehavior: 0
 --- !u!114 &1633146728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2030,6 +2024,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 9
@@ -2062,6 +2057,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 607305578}
   m_Father: {fileID: 1273045296}
@@ -2139,6 +2135,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 472317787}
   - {fileID: 754665787}
@@ -2201,7 +2198,10 @@ MonoBehaviour:
   m_HideMobileInput: 0
   m_CharacterValidation: 0
   m_CharacterLimit: 0
-  m_OnEndEdit:
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDidEndEdit:
     m_PersistentCalls:
       m_Calls: []
   m_OnValueChanged:
@@ -2342,6 +2342,7 @@ Transform:
   m_LocalRotation: {x: 0.10938167, y: 0.8754261, z: -0.40821788, w: 0.23456976}
   m_LocalPosition: {x: 0, y: 10, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -2434,6 +2435,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922469884916180}
   m_RootOrder: 0
@@ -2453,6 +2455,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922471034320686}
   - {fileID: 7413922471169038003}
@@ -2549,6 +2552,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922470766294195}
   m_RootOrder: 0
@@ -2618,6 +2622,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922470195793858}
   m_RootOrder: 0
@@ -2727,6 +2732,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922469238954925}
   m_Father: {fileID: 7413922471169038003}
@@ -2860,6 +2866,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922469802125740}
   m_Father: {fileID: 7413922471034320686}
@@ -3015,6 +3022,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922470584677030}
   m_RootOrder: 0
@@ -3086,6 +3094,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922470766294195}
   m_RootOrder: 1
@@ -3170,6 +3179,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922470402318327}
   m_Father: {fileID: 7413922471034320686}
@@ -3325,7 +3335,10 @@ MonoBehaviour:
   m_HideMobileInput: 0
   m_CharacterValidation: 0
   m_CharacterLimit: 0
-  m_OnEndEdit:
+  m_OnSubmit:
+    m_PersistentCalls:
+      m_Calls: []
+  m_OnDidEndEdit:
     m_PersistentCalls:
       m_Calls: []
   m_OnValueChanged:
@@ -3361,6 +3374,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922469798861380}
   - {fileID: 7413922470484982542}
@@ -3401,6 +3415,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922470911255789}
   m_Father: {fileID: 7413922471034320686}
@@ -3594,6 +3609,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922470771695600}
   m_RootOrder: 0
@@ -3629,6 +3645,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7413922470771695600}
   - {fileID: 7413922470584677030}
@@ -3668,6 +3685,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1140581780}
   - {fileID: 7413922471197805025}
@@ -3708,6 +3726,7 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7413922471169038003}
   m_RootOrder: 1

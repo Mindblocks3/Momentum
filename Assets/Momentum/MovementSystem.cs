@@ -16,9 +16,8 @@ namespace Mirage.Momentum
     {
         public int SnapshotPerSecond = 30;
 
-        NetworkWorld world;
-        public ClientObjectManager ClientObjectManager;
-        public ServerObjectManager ServerObjectManager;
+        public NetworkClient Client;
+        public NetworkServer Server;
 
         private readonly SortedSet<MovementSync> objects = new SortedSet<MovementSync>();
 
@@ -30,11 +29,10 @@ namespace Mirage.Momentum
 
         private void InitServer()
         {
-            world.onSpawn.AddListener(Spawned);
-            world.onUnspawn.AddListener(UnSpawned);
 
-            ServerObjectManager.Server.Started.AddListener(OnStartServer);
-            ServerObjectManager.Server.Stopped.AddListener(OnStopServer);
+            Server.Started.AddListener(OnStartServer);
+            Server.Stopped.AddListener(OnStopServer);
+            
         }
 
         private void Spawned(NetworkIdentity ni)
@@ -56,6 +54,8 @@ namespace Mirage.Momentum
         #region Server generating and sending snapshots
         private void OnStartServer()
         {
+            Server.World.onSpawn.AddListener(Spawned);
+            Server.World.onUnspawn.AddListener(UnSpawned);
             StartCoroutine(SendSnapshots());
         }
 
@@ -79,7 +79,7 @@ namespace Mirage.Momentum
 
             Snapshot snapshot = TakeSnapshot();
 
-            foreach (INetworkConnection connection in ServerObjectManager.Server.connections)
+            foreach (var connection in Server.Players)
             {
                 if (connection.IsReady)
                     connection.SendNotify(snapshot, null);
@@ -124,10 +124,8 @@ namespace Mirage.Momentum
 
         private void InitClient()
         {
-            ClientObjectManager.Spawned.AddListener(Spawned);
-            ClientObjectManager.UnSpawned.AddListener(UnSpawned);
 
-            ClientObjectManager.Client.Authenticated.AddListener(OnClientConnected);
+            Client.Authenticated.AddListener(OnClientConnected);
             clientTimeOffsetAvg = new ExponentialMovingAverage(SnapshotPerSecond);
             interpolationOffset = (float)SNAPSHOT_OFFSET_COUNT / SnapshotPerSecond;
 
@@ -140,6 +138,9 @@ namespace Mirage.Momentum
 
         private void OnClientConnected(INetworkPlayer connection)
         {
+            Client.World.onSpawn.AddListener(Spawned);
+            Client.World.onUnspawn.AddListener(UnSpawned);
+
             connection.RegisterHandler<Snapshot>(OnReceiveSnapshot);
         }
 
@@ -150,7 +151,7 @@ namespace Mirage.Momentum
         private void OnReceiveSnapshot(INetworkPlayer arg1, Snapshot snapshot)
         {
             // ignore messages in host mode
-            if (ClientObjectManager.Client.IsLocalClient)
+            if (Client.IsLocalClient)
                 return;
 
             // first snapshot
@@ -187,12 +188,11 @@ namespace Mirage.Momentum
             {
                 clientInterpolationTimeScale = 1.0f;
             }
-
         }
 
         public void Update()
         {
-            if (ClientObjectManager.Client.IsConnected && !ClientObjectManager.Client.IsLocalClient)
+            if (Client.IsConnected && !Client.IsLocalClient)
             {
                 InterpolateObjects();
             }

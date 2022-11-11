@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-namespace Mirror.Examples.Basic
+namespace Mirage.Examples.Basic
 {
     public class PlayerController : MonoBehaviour
     {

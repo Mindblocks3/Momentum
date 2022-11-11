@@ -5,7 +5,7 @@ namespace Mirage.Momentum
 {
 
  
-    internal class Snapshot
+    public class Snapshot
     {
         public struct ObjectState
         {

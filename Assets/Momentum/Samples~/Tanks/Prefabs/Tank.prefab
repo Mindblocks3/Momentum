@@ -32,6 +32,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7831918942946891954}
   - {fileID: 6564220120147636086}
@@ -56,79 +57,28 @@ MonoBehaviour:
   ServerObjectManager: {fileID: 0}
   ClientObjectManager: {fileID: 0}
   m_AssetId: 
-  OnStartServer:
+  _onStartServer:
     m_PersistentCalls:
       m_Calls: []
-  OnStartClient:
+  _onStartClient:
     m_PersistentCalls:
       m_Calls: []
-  OnStartLocalPlayer:
+  _onStartLocalPlayer:
     m_PersistentCalls:
       m_Calls: []
-  OnStartAuthority:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114654712548978148}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-      - m_Target: {fileID: 6900008319038825817}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
-  OnStopAuthority:
-    m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 114654712548978148}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-      - m_Target: {fileID: 6900008319038825817}
-        m_TargetAssemblyTypeName: UnityEngine.Behaviour, UnityEngine
-        m_MethodName: set_enabled
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
-  OnStopClient:
+  _onAuthorityChanged:
     m_PersistentCalls:
       m_Calls: []
-  OnStopServer:
+  _onStopClient:
+    m_PersistentCalls:
+      m_Calls: []
+  _onStopServer:
     m_PersistentCalls:
       m_Calls: []
   hasSpawned: 0
 --- !u!95 &2240606817507776182
 Animator:
-  serializedVersion: 3
+  serializedVersion: 4
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -141,6 +91,7 @@ Animator:
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
@@ -152,13 +103,13 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1916082411674582}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 0.5
   m_Speed: 1
   m_Acceleration: 1
   avoidancePriority: 50
-  m_AngularSpeed: 120
+  m_AngularSpeed: 80
   m_StoppingDistance: 0
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
@@ -187,7 +138,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1916082411674582}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7deadf756194d461e9140e42d651693b, type: 3}
   m_Name: 
@@ -196,7 +147,6 @@ MonoBehaviour:
   syncInterval: 0.1
   agent: {fileID: 6900008319038825817}
   animator: {fileID: 2240606817507776182}
-  rotationSpeed: 80
   shootKey: 32
   projectilePrefab: {fileID: 5890560936853567077, guid: b7dd46dbf38c643f09e206f9fa4be008, type: 3}
   projectileMount: {fileID: 5718089106632469514}
@@ -249,6 +199,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 1, z: 0}
   m_LocalScale: {x: 0.25, y: 0.25, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4492442352427800}
   m_RootOrder: 3
@@ -264,6 +215,7 @@ MeshRenderer:
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
@@ -343,6 +295,7 @@ Transform:
   m_LocalRotation: {x: 0.02281505, y: -0, z: -0, w: 0.9997397}
   m_LocalPosition: {x: 0.07, y: 0.46, z: 0.126}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4492442352427800}
   m_RootOrder: 1
@@ -435,6 +388,7 @@ Transform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.412, z: 0.936}
   m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 4492442352427800}
   m_RootOrder: 2
@@ -444,6 +398,7 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
+    serializedVersion: 2
     m_TransformParent: {fileID: 4492442352427800}
     m_Modifications:
     - target: {fileID: 100010, guid: 38b49695fc0a4418bbc350f2366660c5, type: 3}
@@ -500,6 +455,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 2e67e42170aa64aa9a33424f8045ac89, type: 2}
     m_RemovedComponents:
     - {fileID: 9500000, guid: 38b49695fc0a4418bbc350f2366660c5, type: 3}
+    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: 38b49695fc0a4418bbc350f2366660c5, type: 3}
 --- !u!4 &7831918942946891954 stripped
 Transform:

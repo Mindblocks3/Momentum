@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Mirror.Examples.Tanks
+namespace Mirage.Examples.Tanks
 {
     public class TankGameManager : MonoBehaviour
     {
@@ -25,7 +25,7 @@ namespace Mirror.Examples.Tanks
 
         void Update()
         {
-            if (NetworkManager.IsNetworkActive)
+            if (NetworkManager.Client.IsConnected)
             {
                 GameReadyCheck();
                 GameOverCheck();
@@ -84,9 +84,9 @@ namespace Mirror.Examples.Tanks
 
         void CheckPlayersNotInList()
         {
-            foreach (KeyValuePair<uint, NetworkIdentity> kvp in NetworkManager.Client.Spawned)
+            foreach (NetworkIdentity identity in NetworkManager.Client.World.SpawnedIdentities)
             {
-                Tank comp = kvp.Value.GetComponent<Tank>();
+                Tank comp = identity.GetComponent<Tank>();
                 if (comp != null && !players.Contains(comp))
                 {
                     //Add if new
@@ -97,6 +97,8 @@ namespace Mirror.Examples.Tanks
 
         bool GetAllReadyState()
         {
+            if (!LocalPlayer || !LocalPlayer.isReady) return false;
+
             bool AllReady = true;
             foreach (Tank tank in players)
             {
@@ -144,10 +146,13 @@ namespace Mirror.Examples.Tanks
         void FindLocalTank()
         {
             //Check to see if the player is loaded in yet
-            if (NetworkManager.Client.LocalPlayer == null)
+            if (NetworkManager.Client.Player == null)
                 return;
 
-            LocalPlayer = NetworkManager.Client.LocalPlayer.GetComponent<Tank>();
+            if (NetworkManager.Client.Player.Identity == null)
+                return;
+
+            LocalPlayer = NetworkManager.Client.Player.Identity.GetComponent<Tank>();
         }
 
         void UpdateStats()
@@ -155,6 +160,7 @@ namespace Mirror.Examples.Tanks
             HealthText.text = LocalPlayer.health.ToString();
             ScoreText.text = LocalPlayer.score.ToString();
         }
+
 
         public void ReadyButtonHandler()
         {

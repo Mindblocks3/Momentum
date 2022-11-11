@@ -1,16 +1,13 @@
 using UnityEngine;
 using UnityEngine.AI;
 
-namespace Mirror.Examples.Tanks
+namespace Mirage.Examples.Tanks
 {
     public class Tank : NetworkBehaviour
     {
         [Header("Components")]
         public NavMeshAgent agent;
         public Animator animator;
-
-        [Header("Movement")]
-        public float rotationSpeed = 100;
 
         [Header("Firing")]
         public KeyCode shootKey = KeyCode.Space;
@@ -56,7 +53,7 @@ namespace Mirror.Examples.Tanks
 
             // rotate
             float horizontal = Input.GetAxis("Horizontal");
-            transform.Rotate(0, horizontal * rotationSpeed * Time.deltaTime, 0);
+            transform.Rotate(0, horizontal * agent.angularSpeed * Time.deltaTime, 0);
 
             // move
             float vertical = Input.GetAxis("Vertical");
