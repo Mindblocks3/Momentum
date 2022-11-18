@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Mirage.Momentum
@@ -13,11 +14,15 @@ namespace Mirage.Momentum
             public Vector3 Position;
             public Quaternion Rotation;
         }
-
+        
+        internal ushort Id;
         // server time when this snapshot got generated
         public double Time;
 
         public List<ObjectState> ObjectsState = new List<ObjectState>();
 
+        
+        [NonSerialized]
+        public HashSet<INetworkPlayer> Players = new();
     }
 }

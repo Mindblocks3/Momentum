@@ -13,13 +13,15 @@ namespace Mirage.Momentum
     /// and performs interpolation on the clients
     /// </summary>
     public class MovementSystem : MonoBehaviour
-    {
+    {        
         public int SnapshotPerSecond = 30;
+
+        private ushort _snapshotId = 0;
 
         public NetworkClient Client;
         public NetworkServer Server;
 
-        private readonly SortedSet<MovementSync> objects = new SortedSet<MovementSync>();
+        private readonly List<MovementSync> objects = new List<MovementSync>();
 
         public void Awake()
         {
@@ -32,14 +34,32 @@ namespace Mirage.Momentum
 
             Server.Started.AddListener(OnStartServer);
             Server.Stopped.AddListener(OnStopServer);
+            Server.Connected.AddListener(OnServerConnected);
             
+        }
+
+        private void OnServerConnected(INetworkPlayer player)
+        {
+            player.NotifyDelivered += OnNotifyDelivered;
+        }
+
+        private void OnNotifyDelivered(INetworkPlayer player, object token)
+        {
+            if (token is Snapshot snapshot)
+            {
+                snapshot.Players.Add(player);
+            }
         }
 
         private void Spawned(NetworkIdentity ni)
         {
             if (ni.TryGetComponent(out MovementSync movementSync))
             {
-                objects.Add(movementSync);
+                var index = objects.BinarySearch(movementSync);
+                if (index < 0)
+                {
+                    objects.Insert(~index, movementSync);
+                }
             }
         }
 
@@ -52,6 +72,8 @@ namespace Mirage.Momentum
         }
 
         #region Server generating and sending snapshots
+        private const int SNAPSHOT_WINDOW = 100;
+        private CircularBuffer<Snapshot> sentSnapshots = new CircularBuffer<Snapshot>(SNAPSHOT_WINDOW);
         private void OnStartServer()
         {
             Server.World.onSpawn.AddListener(Spawned);
@@ -72,25 +94,68 @@ namespace Mirage.Momentum
                 yield return new WaitForSeconds(1f / SnapshotPerSecond);
             }
         }
-
         private void SendSnapshot()
         {
             // generate a snapshot of all objects and send it to the clients
 
             Snapshot snapshot = TakeSnapshot();
 
+            // find the snapshot that has been acknoledged by most clients
+            // and use that as the baseline
+            Snapshot baseline = FindBaseline();
+
+            if (sentSnapshots.Count >= SNAPSHOT_WINDOW)
+            {
+                sentSnapshots.RemoveBack();
+            }
+
+            sentSnapshots.AddFront(snapshot);
+
+            // delta compress this snapshot against the baseline
+            BitBuffer buffer = new BitBuffer(1500);
+
+            // and send it to the clients
+            var snapshotMessage = new SnapshotMessage
+            {
+                SnapshotId = snapshot.Id,
+                BaselineId = baseline.Id,
+                Time = snapshot.Time,
+                Data = buffer.ToReadOnlyMemory()
+            };
+
             foreach (var connection in Server.Players)
             {
+                
                 if (connection.IsReady)
-                    connection.SendNotify(snapshot, null);
+                    connection.SendNotify(snapshot, snapshot);
             }
+        }
+
+        private Snapshot FindBaseline()
+        {
+            // loop throgh list of sent snapshots and find the one that has been acknoledged by most clients
+            // that will be the baseline for the next snapshot
+            Snapshot baseline = null;
+            int baselineCount = 0;
+            foreach (var snapshot in sentSnapshots)
+            {
+                int count = snapshot.Players.Count;
+
+                if (count > baselineCount)
+                {
+                    baseline = snapshot;
+                    baselineCount = count;
+                }
+            }
+            return baseline;
         }
 
         private Snapshot TakeSnapshot()
         {
             var snapshot = new Snapshot()
             {
-                Time = Time.unscaledTime
+                Time = Time.unscaledTime,
+                Id = _snapshotId++,
             };
 
             foreach (MovementSync obj in objects)

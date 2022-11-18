@@ -121,8 +121,9 @@ namespace Mirage.Momentum
         public CircularBufferEnumerator GetEnumerator() => new CircularBufferEnumerator(this);
 
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+        IEnumerator<T> IEnumerable<T>.GetEnumerator() => GetEnumerator();
 
-        public class CircularBufferEnumerator : IEnumerator<T>
+        public struct CircularBufferEnumerator : IEnumerator<T>
         {
             private readonly CircularBuffer<T> buffer;
             private int index;
@@ -140,7 +141,6 @@ namespace Mirage.Momentum
             public void Dispose()
             {
             }
-
             public bool MoveNext()
             {
                 index++;
