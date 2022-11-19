@@ -114,15 +114,6 @@ namespace Mirage.Momentum
             // delta compress this snapshot against the baseline
             BitBuffer buffer = new BitBuffer(1500);
 
-            // and send it to the clients
-            var snapshotMessage = new SnapshotMessage
-            {
-                SnapshotId = snapshot.Id,
-                BaselineId = baseline.Id,
-                Time = snapshot.Time,
-                Data = buffer.ToReadOnlyMemory()
-            };
-
             foreach (var connection in Server.Players)
             {
                 
