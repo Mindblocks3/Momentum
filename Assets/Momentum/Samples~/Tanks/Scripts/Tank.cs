@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.InputSystem.InputAction;
 
 namespace Mirage.Examples.Tanks
 {
@@ -11,6 +12,10 @@ namespace Mirage.Examples.Tanks
 
         [Header("Firing")]
         public KeyCode shootKey = KeyCode.Space;
+
+        public Vector2 MoveInput;
+        public bool FireInput;
+
         public GameObject projectilePrefab;
         public Transform projectileMount;
 
@@ -29,6 +34,7 @@ namespace Mirage.Examples.Tanks
         public bool IsDead => health <= 0;
         public TextMesh nameText;
 
+        public bool prevFire = false;
 
         void Update()
         {
@@ -52,20 +58,31 @@ namespace Mirage.Examples.Tanks
                 return;
 
             // rotate
-            float horizontal = Input.GetAxis("Horizontal");
+            float horizontal = MoveInput.x;
             transform.Rotate(0, horizontal * agent.angularSpeed * Time.deltaTime, 0);
 
             // move
-            float vertical = Input.GetAxis("Vertical");
+            float vertical = MoveInput.y;
             Vector3 forward = transform.TransformDirection(Vector3.forward);
             agent.velocity = forward * Mathf.Max(vertical, 0) * agent.speed;
             animator.SetBool("Moving", agent.velocity != Vector3.zero);
 
             // shoot
-            if (Input.GetKeyDown(shootKey))
+            if (FireInput && !prevFire)
             {
-                CmdFire();
+                CmdFire();                
             }
+            prevFire = FireInput;
+        }
+
+        public void InputMove(CallbackContext context)
+        {
+            MoveInput = context.ReadValue<Vector2>();
+        }
+
+        public void InputFire(CallbackContext context)
+        {
+            FireInput = context.ReadValueAsButton();
         }
 
         // this is called on the server
