@@ -12,5 +12,6 @@ namespace Mirage.Momentum
         {
             return NetId.CompareTo(other.NetId);
         }
+
     }
 }

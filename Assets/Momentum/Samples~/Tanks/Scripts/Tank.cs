@@ -27,11 +27,10 @@ namespace Mirage.Examples.Tanks
         [SyncVar]
         public string playerName;
         [SyncVar]
-        public bool allowMovement;
-        [SyncVar]
         public bool isReady;
 
         public bool IsDead => health <= 0;
+
         public TextMesh nameText;
 
         public bool prevFire = false;
@@ -44,15 +43,8 @@ namespace Mirage.Examples.Tanks
                 nameText.transform.rotation = Camera.main.transform.rotation;
             }
 
-            // movement for local player
-            if (!IsLocalPlayer)
-                return;
-
             //Set local players name color to green
             nameText.color = Color.green;
-
-            if (!allowMovement)
-                return;
 
             if (IsDead)
                 return;
@@ -64,41 +56,35 @@ namespace Mirage.Examples.Tanks
             // move
             float vertical = MoveInput.y;
             Vector3 forward = transform.TransformDirection(Vector3.forward);
-            agent.velocity = forward * Mathf.Max(vertical, 0) * agent.speed;
+            agent.velocity = agent.speed * Mathf.Max(vertical, 0) * forward;
             animator.SetBool("Moving", agent.velocity != Vector3.zero);
 
             // shoot
             if (FireInput && !prevFire)
             {
-                CmdFire();                
+                Debug.Log("Firing");
+                Fire();                
             }
             prevFire = FireInput;
         }
 
         public void InputMove(CallbackContext context)
         {
-            MoveInput = context.ReadValue<Vector2>();
+            if (IsLocalPlayer)
+                MoveInput = context.ReadValue<Vector2>();
         }
 
         public void InputFire(CallbackContext context)
         {
-            FireInput = context.ReadValueAsButton();
+            if (IsLocalPlayer)
+                FireInput = context.ReadValueAsButton();
         }
 
         // this is called on the server
-        [ServerRpc]
-        void CmdFire()
+        void Fire()
         {
             GameObject projectile = Instantiate(projectilePrefab, projectileMount.position, transform.rotation);
             projectile.GetComponent<Projectile>().source = gameObject;
-            ServerObjectManager.Spawn(projectile);
-            RpcOnFire();
-        }
-
-        // this is called on the tank that fired for all observers
-        [ClientRpc]
-        void RpcOnFire()
-        {
             animator.SetTrigger("Shoot");
         }
 

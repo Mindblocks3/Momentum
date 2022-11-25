@@ -6,23 +6,14 @@ namespace Mirage.Momentum
 {
 
  
-    public class Snapshot
+    public class Snapshot<T> where T : ObjectState
     {
-        public struct ObjectState
-        {
-            public uint NetId;
-            public Vector3 Position;
-            public Quaternion Rotation;
-        }
         
         internal ushort Id;
         // server time when this snapshot got generated
         public double Time;
 
-        public List<ObjectState> ObjectsState = new List<ObjectState>();
+        public List<T> ObjectsState = new List<T>();
 
-        
-        [NonSerialized]
-        public HashSet<INetworkPlayer> Players = new();
     }
 }

@@ -2,7 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static Mirage.Momentum.Snapshot;
 using Mirage;
 namespace Mirage.Momentum
 {
@@ -12,7 +11,7 @@ namespace Mirage.Momentum
     /// sends them to the clients
     /// and performs interpolation on the clients
     /// </summary>
-    public class MovementSystem : MonoBehaviour
+    public abstract class MovementSystem<T> : MonoBehaviour where T : ObjectState
     {        
         public int SnapshotPerSecond = 30;
 
@@ -20,8 +19,6 @@ namespace Mirage.Momentum
 
         public NetworkClient Client;
         public NetworkServer Server;
-
-        private readonly List<MovementSync> objects = new List<MovementSync>();
 
         public void Awake()
         {
@@ -31,334 +28,257 @@ namespace Mirage.Momentum
 
         private void InitServer()
         {
-
             Server.Started.AddListener(OnStartServer);
             Server.Stopped.AddListener(OnStopServer);
             Server.Connected.AddListener(OnServerConnected);
-            
         }
 
         private void OnServerConnected(INetworkPlayer player)
         {
             player.NotifyDelivered += OnNotifyDelivered;
+            player.RegisterHandler<SnapshotMessage>(OnServerReceiveSnapshot);
+        }
+
+        private void OnServerReceiveSnapshot(INetworkPlayer arg1, SnapshotMessage snapshotMsg)
+        { 
+            // apply the snapshot
+            var snapshot = new Snapshot<T>()
+            {
+                Id = snapshotMsg.SnapshotId,
+                Time = snapshotMsg.Time,
+                ObjectsState = ReadSnapshotData(new BitBuffer(snapshotMsg.Data))
+            };
+
+            ApplySnapshot(snapshot, Server.World);
+        }
+
+        private void OnServerSnapshot(INetworkPlayer arg1, SnapshotMessage arg2)
+        {
+            throw new NotImplementedException();
         }
 
         private void OnNotifyDelivered(INetworkPlayer player, object token)
         {
-            if (token is Snapshot snapshot)
-            {
-                snapshot.Players.Add(player);
-            }
-        }
-
-        private void Spawned(NetworkIdentity ni)
-        {
-            if (ni.TryGetComponent(out MovementSync movementSync))
-            {
-                var index = objects.BinarySearch(movementSync);
-                if (index < 0)
-                {
-                    objects.Insert(~index, movementSync);
-                }
-            }
-        }
-
-        private void UnSpawned(NetworkIdentity ni)
-        {
-            if (ni.TryGetComponent(out MovementSync movementSync))
-            {
-                objects.Remove(movementSync);
-            }
+            // if (token is Snapshot snapshot)
+            // {
+            //     snapshot.Players.Add(player);
+            // }
         }
 
         #region Server generating and sending snapshots
-        private const int SNAPSHOT_WINDOW = 100;
-        private CircularBuffer<Snapshot> sentSnapshots = new CircularBuffer<Snapshot>(SNAPSHOT_WINDOW);
+
+        Coroutine serverSnapshotCoroutine;
+
         private void OnStartServer()
         {
-            Server.World.onSpawn.AddListener(Spawned);
-            Server.World.onUnspawn.AddListener(UnSpawned);
-            StartCoroutine(SendSnapshots());
+            serverSnapshotCoroutine = StartCoroutine(SendSnapshots());
         }
 
         private void OnStopServer()
         {
-            StopAllCoroutines();
+            StopCoroutine(serverSnapshotCoroutine);
         }
 
         private IEnumerator SendSnapshots()
         {
             while (true)
             {
-                SendSnapshot();
+                SendSnapshot(Server.World);
                 yield return new WaitForSeconds(1f / SnapshotPerSecond);
             }
         }
-        private void SendSnapshot()
+        private void SendSnapshot(NetworkWorld world)
         {
             // generate a snapshot of all objects and send it to the clients
 
-            Snapshot snapshot = TakeSnapshot();
-
-            // find the snapshot that has been acknoledged by most clients
-            // and use that as the baseline
-            Snapshot baseline = FindBaseline();
-
-            if (sentSnapshots.Count >= SNAPSHOT_WINDOW)
-            {
-                sentSnapshots.RemoveBack();
-            }
-
-            sentSnapshots.AddFront(snapshot);
+            Snapshot<T> snapshot = TakeSnapshot(world);
 
             // delta compress this snapshot against the baseline
             BitBuffer buffer = new BitBuffer(1500);
 
+            WriteSnapshotData(buffer, snapshot);
+
+            var SnapshotMessage = new SnapshotMessage
+            {
+                SnapshotId = snapshot.Id,
+                Time = snapshot.Time,
+                Data = buffer.ToMemory()
+            };
             foreach (var connection in Server.Players)
             {
-                
-                if (connection.IsReady)
-                    connection.SendNotify(snapshot, snapshot);
+                if (connection.IsReady && connection != Server.LocalPlayer)
+                    connection.SendNotify(SnapshotMessage, null);
             }
         }
 
-        private Snapshot FindBaseline()
+        private void WriteSnapshotData(BitBuffer buffer, Snapshot<T> snapshot)
         {
-            // loop throgh list of sent snapshots and find the one that has been acknoledged by most clients
-            // that will be the baseline for the next snapshot
-            Snapshot baseline = null;
-            int baselineCount = 0;
-            foreach (var snapshot in sentSnapshots)
-            {
-                int count = snapshot.Players.Count;
+            // write the number of objects in this snapshot
+            buffer.Write(snapshot.ObjectsState.Count, 16);
 
-                if (count > baselineCount)
-                {
-                    baseline = snapshot;
-                    baselineCount = count;
-                }
+            // write the objects state
+            foreach (var objectState in snapshot.ObjectsState)
+            {                
+                Serialize(buffer, objectState);
             }
-            return baseline;
         }
 
-        private Snapshot TakeSnapshot()
+        protected abstract void Serialize(BitBuffer buffer, T objectState);
+
+        private Snapshot<T> TakeSnapshot(NetworkWorld world)
         {
-            var snapshot = new Snapshot()
+            var snapshot = new Snapshot<T>()
             {
                 Time = Time.unscaledTime,
                 Id = _snapshotId++,
+                ObjectsState = new List<T>(world.SpawnedIdentities.Count)
             };
 
-            foreach (MovementSync obj in objects)
+            foreach (var obj in world.SpawnedIdentities)
             {
-                var objectState = new ObjectState()
+                var movementSync = obj.GetComponent<MovementSync>();
+                if (movementSync != null)
                 {
-                    NetId = obj.NetId,
-                    Position = obj.transform.position,
-                    Rotation = obj.transform.rotation,
-                };
-                snapshot.ObjectsState.Add(objectState);
-            }
+                    snapshot.ObjectsState.Add(GetState(movementSync));
+                }
+            }       
             return snapshot;
         }
+
+        protected abstract T GetState(MovementSync obj);
 
         #endregion;
 
         #region Client
 
-        ExponentialMovingAverage clientTimeOffsetAvg;
-        ExponentialMovingAverage clientSnapshotDeliveryInterval;
-        float? clientLastSnapshotTime;
-
-        double clientInterpolationTime;
-
-        const int SNAPSHOT_OFFSET_COUNT = 2;
-        private float interpolationOffset;
-        private float iterpolationTimeOffsetAheadThreshold;
-        private float iterpolationTimeOffsetBehindThreshold;
-        private float clientInterpolationTimeScale = 1.0f;
 
         private void InitClient()
         {
-
             Client.Authenticated.AddListener(OnClientConnected);
-            clientTimeOffsetAvg = new ExponentialMovingAverage(SnapshotPerSecond);
-            interpolationOffset = (float)SNAPSHOT_OFFSET_COUNT / SnapshotPerSecond;
-
-            iterpolationTimeOffsetAheadThreshold = 1f / SnapshotPerSecond;
-            iterpolationTimeOffsetBehindThreshold = -0.5f / SnapshotPerSecond;
-            clientSnapshotDeliveryInterval = new ExponentialMovingAverage(SnapshotPerSecond);
-
-            clientLastSnapshotTime = null;
+            Client.Disconnected.AddListener(OnClientDisconnected);
         }
+
+        Coroutine clientSnapshotCoroutine;
 
         private void OnClientConnected(INetworkPlayer connection)
         {
-            Client.World.onSpawn.AddListener(Spawned);
-            Client.World.onUnspawn.AddListener(UnSpawned);
-
-            connection.RegisterHandler<Snapshot>(OnReceiveSnapshot);
-        }
-
-        private readonly List<Snapshot> snapshots = new List<Snapshot>();
-
-        // we will interpolate from this snapshot to the next snapshot
-
-        private void OnReceiveSnapshot(INetworkPlayer arg1, Snapshot snapshot)
-        {
-            // ignore messages in host mode
-            if (Client.IsLocalClient)
-                return;
-
-            // first snapshot
-            if (snapshots.Count == 0)
+            if (!Client.IsLocalClient)
             {
-                clientInterpolationTime = snapshot.Time - interpolationOffset;
-            }
-
-            snapshots.Add(snapshot);
-
-            if (clientLastSnapshotTime.HasValue)
-            {
-                clientSnapshotDeliveryInterval.Add(Time.time - clientLastSnapshotTime.Value);
-                interpolationOffset = (float)(SNAPSHOT_OFFSET_COUNT * clientSnapshotDeliveryInterval.Value);
-            }
-
-            clientLastSnapshotTime = Time.time;
-
-            var diff = snapshot.Time - clientInterpolationTime;
-
-            clientTimeOffsetAvg.Add(diff);
-
-            var diffWanted = clientTimeOffsetAvg.Value - interpolationOffset;
-
-            if (diffWanted > iterpolationTimeOffsetAheadThreshold)
-            {
-                clientInterpolationTimeScale = 1.01f;
-            }
-            else if (diffWanted < iterpolationTimeOffsetBehindThreshold)
-            {
-                clientInterpolationTimeScale = 0.99f;
+                connection.RegisterHandler<SnapshotMessage>(OnClientReceiveSnapshot);
+                clientSnapshotCoroutine = StartCoroutine(SendClientSnapshots());
             }
             else
             {
-                clientInterpolationTimeScale = 1.0f;
+                connection.RegisterHandler<SnapshotMessage>(msg => { });
             }
         }
 
-        public void Update()
+        private IEnumerator SendClientSnapshots()
         {
-            if (Client.IsConnected && !Client.IsLocalClient)
+            while (true)
             {
-                InterpolateObjects();
+                SendClientSnapshot(Client.World);
+                yield return new WaitForSeconds(1f / SnapshotPerSecond);
             }
+            
         }
 
-        private void InterpolateObjects()
+        private void SendClientSnapshot(NetworkWorld world)
         {
-            if (snapshots.Count == 0)
-                return;
+            Snapshot<T> snapshot = TakeClientSnapshot(world);
 
-            clientInterpolationTime += Time.unscaledDeltaTime * clientInterpolationTimeScale;
+            // delta compress this snapshot against the baseline
+            BitBuffer buffer = new BitBuffer(1500);
 
-            float alpha = 0;
+            WriteSnapshotData(buffer, snapshot);
 
-            Snapshot from = default;
-            Snapshot to = default;
-            int removeCount = 0;
-
-            for (int i = 0; i< snapshots.Count; i++)
+            var SnapshotMessage = new SnapshotMessage
             {
-                from = snapshots[i];
+                SnapshotId = snapshot.Id,
+                Time = snapshot.Time,
+                Data = buffer.ToMemory()
+            };
+            Client.Player.SendNotify(SnapshotMessage, null);
+        }
 
-                if (i + 1 == snapshots.Count)
-                {
-                    to = from;
-                    alpha = 0;
-                }
-                else
-                {
-                    int f = i;
-                    int t = i + 1;
+        private Snapshot<T> TakeClientSnapshot(NetworkWorld world)
+        {
+            var snapshot = new Snapshot<T>()
+            {
+                Time = Time.unscaledTime,
+                Id = _snapshotId++,
+                ObjectsState = new List<T>(1)
+            };
 
-                    if (snapshots[f].Time <= clientInterpolationTime && snapshots[t].Time > clientInterpolationTime)
+            foreach (var obj in world.SpawnedIdentities)
+            {
+                if (obj.IsLocalPlayer)
+                {
+                    var movementSync = obj.GetComponent<MovementSync>();
+                    if (movementSync != null && movementSync.PlayerControlled)
                     {
-                        from = snapshots[f];
-                        to = snapshots[t];
-
-                        alpha = Mathf.InverseLerp((float)from.Time, (float)to.Time, (float)clientInterpolationTime);
-                        break;
-                    }
-                    else if (snapshots[t].Time <= clientInterpolationTime)
-                    {
-                        removeCount++;
+                        snapshot.ObjectsState.Add(GetState(movementSync));
                     }
                 }
-            }
-
-            snapshots.RemoveRange(0, removeCount);
-
-            MoveObjects(from, to, alpha);
+            }       
+            return snapshot;
         }
 
-        private void MoveObjects(Snapshot from, Snapshot to, float alpha)
+
+        private void OnClientDisconnected()
         {
-            var fromEnumerator = from.ObjectsState.GetEnumerator();
-            var toEnumerator = to.ObjectsState.GetEnumerator();
-            var objEnumerator = objects.GetEnumerator();
-
-            if (!fromEnumerator.MoveNext())
-                return;
-
-            if (!toEnumerator.MoveNext())
-                return;
-
-            while (objEnumerator.MoveNext())
+            if (clientSnapshotCoroutine is not null)
             {
-                // get the from matching the object
-                uint netId = objEnumerator.Current.NetId;
+                StopCoroutine(clientSnapshotCoroutine);
+            }
+        }
 
-                while (fromEnumerator.Current.NetId < netId)
+        // we will interpolate from this snapshot to the next snapshot
+
+        private void OnClientReceiveSnapshot(INetworkPlayer arg1, SnapshotMessage snapshotMsg)
+        { 
+            // apply the snapshot
+            var snapshot = new Snapshot<T>()
+            {
+                Id = snapshotMsg.SnapshotId,
+                Time = snapshotMsg.Time,
+                ObjectsState = ReadSnapshotData(new BitBuffer(snapshotMsg.Data))
+            };
+
+            ApplySnapshot(snapshot, Client.World);
+        }
+
+        private List<T> ReadSnapshotData(BitBuffer buffer)
+        {
+            uint count = buffer.ReadUInt32(16);
+            List<T> result = new List<T>((int)count);
+
+            for (int i = 0; i < count; i++) {
+                var objectState = Deserialize(buffer);
+
+                result.Add(objectState);
+            }
+
+            return result;
+        }
+        protected abstract T Deserialize(BitBuffer buffer);
+
+        private void ApplySnapshot(Snapshot<T> snapshot, NetworkWorld world)
+        {
+            // apply the snapshot
+            foreach (var objectState in snapshot.ObjectsState)
+            {
+                if (world.TryGetIdentity(objectState.NetId, out var identity))
                 {
-                    // nothing else to interpolate from;
-                    if (!fromEnumerator.MoveNext())
-                        return;
-                }
-
-                while (toEnumerator.Current.NetId < netId)
-                {
-                    if (!toEnumerator.MoveNext())
-                        return;
-                }
-
-                ObjectState objFrom = fromEnumerator.Current;
-                ObjectState objTo = toEnumerator.Current;
-
-                if (objFrom.NetId == netId || objTo.NetId == netId)
-                {
-                    MoveObject(objEnumerator.Current, objFrom, objTo, alpha);
+                    if (identity.TryGetComponent(out MovementSync movementSync))
+                    {
+                        SetState(movementSync, objectState);
+                    }
                 }
             }
         }
 
-        /// <summary>
-        /// Interpolate the object from state to state with a given alpha
-        /// </summary>
-        /// <param name="obj">The object to move</param>
-        /// <param name="from">the from state</param>
-        /// <param name="to">the to state</param>
-        /// <param name="alpha">the interpolation alpha</param>
-        private void MoveObject(MovementSync obj, ObjectState from, ObjectState to, float alpha)
-        {
-            if (obj.PlayerControlled && obj.HasAuthority)
-                return;
-
-            Transform tr = obj.transform;
-
-            tr.position = Vector3.Lerp(from.Position, to.Position, alpha);
-            tr.rotation = Quaternion.Slerp(from.Rotation, to.Rotation, alpha);
-        }
-
+        protected abstract void SetState(MovementSync movementSync, T objectState);
 
         #endregion
     }

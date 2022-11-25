@@ -1,22 +1,21 @@
 
 using System;
 using System.Runtime.InteropServices;
+using UnityEngine;
 using UnityEngine.Assertions;
 
 namespace Mirage.Momentum
 {
 
     // a buffer that supports bit compression
-    class BitBuffer
+    public class BitBuffer
     {
-        // 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00011111
-
         const int BITCOUNT = 64;
         const int USEDMASK = BITCOUNT - 1;
         const int INDEXSHIFT = 6;
         const ulong MAXVALUE = ulong.MaxValue;
 
-        ulong[] _data;
+        Memory<ulong> _data;
         int _offsetInBits;
 
         public BitBuffer(int size)
@@ -24,6 +23,12 @@ namespace Mirage.Momentum
             Assert.IsTrue(size >= 0, "size must be greater than 0");
 
             _data = new ulong[(size + sizeof(ulong) -1 ) / sizeof(ulong)];
+            _offsetInBits = 0;
+        }
+
+        public BitBuffer(Memory<ulong> memory)
+        {
+            _data = memory;
             _offsetInBits = 0;
         }
 
@@ -46,7 +51,6 @@ namespace Mirage.Momentum
         // 
         // 1UL << (2-1)
         // 10 <-
-
         public uint ReadUInt32VarLength(int blockSize)
         {
             var blocks = 1;
@@ -59,13 +63,19 @@ namespace Mirage.Momentum
             return ReadUInt32(blocks * blockSize);
         }
 
+        public void WriteBoolean(bool value)
+        {
+            WriteInternal(value ? 1UL : 0UL, 1);
+        }
         public bool ReadBoolean()
         {
             return ReadInternal(1) == 1;
         }
-        public void WriteBoolean(bool value)
+
+        public void Write(uint value, int bits = 32)
         {
-            WriteInternal(value ? 1UL : 0UL, 1);
+            Assert.IsTrue(bits >= 0 && bits <= 32);
+            WriteInternal(value, bits);
         }
 
         public uint ReadUInt32(int bits)
@@ -73,9 +83,14 @@ namespace Mirage.Momentum
             return (uint)ReadInternal(bits);
         }
 
-        public unsafe void Write(float value)
+        public unsafe void WriteFloat(float value)
         {
             WriteInternal(*(uint*)&value, 32);
+        }
+        public unsafe float ReadFloat()
+        {
+            uint value = ReadUInt32(32);
+            return *(float*)&value;
         }
 
         public unsafe void Write(double value)
@@ -99,11 +114,6 @@ namespace Mirage.Momentum
             return q * (1.0f / accuracy);
         }
 
-        public void Write(uint value, int bits = 32)
-        {
-            Assert.IsTrue(bits >= 0 && bits <= 32);
-            WriteInternal(value, bits);
-        }
 
         public void Write(int value, int bits = 32)
         {
@@ -119,21 +129,22 @@ namespace Mirage.Momentum
             {
                 return 0;
             }
+            var data = _data.Span;
 
             int p = _offsetInBits >> INDEXSHIFT;
             int bitsUsed = _offsetInBits & USEDMASK;
-            ulong first = _data[p] >> bitsUsed;
+            ulong first = data[p] >> bitsUsed;
             int remainingBits = bits - (BITCOUNT - bitsUsed);
 
             ulong value;
 
-            if (remainingBits == 0)
+            if (remainingBits <= 0)
             {
                 value = (first & (MAXVALUE >> (BITCOUNT - bits)));
             }
             else
             {
-                ulong second = _data[p + 1] & (MAXVALUE >> (BITCOUNT - remainingBits));
+                ulong second = data[p + 1] & (MAXVALUE >> (BITCOUNT - remainingBits));
                 value = (first | (second << (bits - remainingBits)));
             }
 
@@ -153,6 +164,7 @@ namespace Mirage.Momentum
 
             value &= (MAXVALUE >> (BITCOUNT - bits));
 
+            var data = _data.Span;
             // our current index
             var p = _offsetInBits >> INDEXSHIFT;
 
@@ -164,20 +176,66 @@ namespace Mirage.Momentum
             if (bitsLeft >= 0)
             {
                 ulong mask = (MAXVALUE >> bitsFree) | (MAXVALUE << (BITCOUNT - bitsLeft));
-                _data[p] = (_data[p] & mask) | (value << bitsUsed);
+                data[p] = (data[p] & mask) | (value << bitsUsed);
             }
             else
             {
-                _data[p] = ((_data[p] & (MAXVALUE >> bitsFree)) | (value << bitsUsed));
-                _data[p + 1] = ((_data[p + 1] & (MAXVALUE << (bits - bitsFree))) | (value >> bitsFree));
+                data[p] = ((data[p] & (MAXVALUE >> bitsFree)) | (value << bitsUsed));
+                data[p + 1] = ((data[p + 1] & (MAXVALUE << (bits - bitsFree))) | (value >> bitsFree));
             }
 
             _offsetInBits += bits;
         }
 
-        internal ReadOnlyMemory<byte> ToReadOnlyMemory()
+        public Memory<ulong> ToMemory()
         {
-            return MemoryMarshal.Cast<ulong, byte>(_data.AsSpan(0, (_offsetInBits + 7) / 8)).ToArray();
+            return _data.Slice(0, (_offsetInBits + BITCOUNT - 1) >> INDEXSHIFT);
+        }
+
+        public void WriteVector2(Vector2 moveInput)
+        {
+            WriteFloat(moveInput.x);
+            WriteFloat(moveInput.y);
+        }
+
+        public Vector2 ReadVector2()
+        {
+            return new Vector2(ReadFloat(), ReadFloat());
+        }
+
+        public void WriteVector3(Vector3 position)
+        {
+            WriteFloat(position.x);
+            WriteFloat(position.y);
+            WriteFloat(position.z);
+        }
+
+        public Vector3 ReadVector3()
+        {
+            return new Vector3(ReadFloat(), ReadFloat(), ReadFloat());
+        }
+
+        public void WriteQuaternion(Quaternion rotation)
+        {
+            WriteFloat(rotation.x);
+            WriteFloat(rotation.y);
+            WriteFloat(rotation.z);
+            WriteFloat(rotation.w);
+        }
+
+        public Quaternion ReadQuaternion()
+        {
+            return new Quaternion(ReadFloat(), ReadFloat(), ReadFloat(), ReadFloat());
+        }
+
+        public ushort ReadUShort()
+        {
+            return (ushort)ReadInternal(16);
+        }
+
+        public bool ReadBool()
+        {
+            return ReadInternal(1) == 1;
         }
     }
 }

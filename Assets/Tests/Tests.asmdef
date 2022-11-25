@@ -4,8 +4,7 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "Mirror.Momentum",
-        "Mirror"
+        "Mirage.Momentum"
     ],
     "includePlatforms": [
         "Editor"

@@ -4,9 +4,9 @@ namespace Mirage.Momentum
 {
     public struct SnapshotMessage
     {
-        public ushort SnapshotId ;
-        public ushort BaselineId ;
         public double Time ;
-        public ReadOnlyMemory<byte> Data ;
+        public ushort SnapshotId ;
+        public ushort Count;
+        public Memory<ulong> Data ;
     }
 }
