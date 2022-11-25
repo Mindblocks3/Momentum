@@ -74,5 +74,22 @@ namespace Mirage.Momentum
             }
         }
 
+        [Test]
+        public void WriteRotation()
+        {
+            Quaternion q = new Quaternion(0.5f, 0.5f, 0.5f, 0.5f);
+
+            BitBuffer buffer = new BitBuffer(1500);
+            buffer.WriteCompressedQuaternion(q, 9);
+
+            BitBuffer reader = new BitBuffer(buffer.ToMemory());
+            Quaternion q2 = reader.ReadCompressedQuaternion(9);
+
+            // get the cosine between the two quaternions
+            float dot = Quaternion.Dot(q, q2);
+            // the rotations should be similar,  so the cosine should be close to 1
+            Assert.That(dot, Is.GreaterThan(0.99f));
+        }
+
     }
 }
