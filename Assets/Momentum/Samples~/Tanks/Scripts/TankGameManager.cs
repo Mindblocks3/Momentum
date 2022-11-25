@@ -72,7 +72,6 @@ namespace Mirage.Examples.Tanks
                 if (players.Count >= MinimumPlayersForGame && GetAllReadyState())
                 {
                     IsGameReady = true;
-                    AllowTankMovement();
 
                     //Update Local GUI:
                     StartPanel.SetActive(false);
@@ -123,7 +122,6 @@ namespace Mirage.Examples.Tanks
             {
                 IsGameOver = true;
                 GameOverPanel.SetActive(true);
-                DisallowTankMovement();
             }
         }
 
@@ -167,22 +165,5 @@ namespace Mirage.Examples.Tanks
             LocalPlayer.SendReadyToServer(PlayerNameText.text);
         }
 
-        //All players are ready and game has started. Allow players to move.
-        void AllowTankMovement()
-        {
-            foreach (Tank tank in players)
-            {
-                tank.allowMovement = true;
-            }
-        }
-
-        //Game is over. Prevent movement
-        void DisallowTankMovement()
-        {
-            foreach (Tank tank in players)
-            {
-                tank.allowMovement = false;
-            }
-        }
     }
 }

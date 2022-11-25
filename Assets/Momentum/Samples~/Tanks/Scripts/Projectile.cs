@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace Mirage.Examples.Tanks
 {
-    public class Projectile : NetworkBehaviour
+    public class Projectile : MonoBehaviour
     {
         public float destroyAfter = 1;
         public Rigidbody rigidBody;
@@ -10,17 +10,12 @@ namespace Mirage.Examples.Tanks
 
         void Awake()
         {
-            NetIdentity.OnStartServer.AddListener(OnStartServer);
+            Invoke(nameof(DestroySelf), destroyAfter);
         }
 
         [Header("Game Stats")]
         public int damage;
         public GameObject source;
-
-        public void OnStartServer()
-        {
-            Invoke(nameof(DestroySelf), destroyAfter);
-        }
 
         // set velocity for server and client. this way we don't have to sync the
         // position, because both the server and the client simulate it.
@@ -30,19 +25,17 @@ namespace Mirage.Examples.Tanks
         }
 
         // destroy for everyone on the server
-        [Server]
         void DestroySelf()
         {
-            ServerObjectManager.Destroy(gameObject);
+            Destroy(gameObject);
         }
 
         // [Server] because we don't want a warning if OnTriggerEnter is
         // called on the client
-        [Server(error=false)]
         void OnTriggerEnter(Collider co)
         {
             //Hit another player
-            if (co.tag.Equals("Player") && co.gameObject != source)
+            if (co.CompareTag("Player") && co.gameObject != source)
             {
                 //Apply damage
                 co.GetComponent<Tank>().health -= damage;
@@ -51,7 +44,7 @@ namespace Mirage.Examples.Tanks
                 source.GetComponent<Tank>().score += damage;
             }
 
-            ServerObjectManager.Destroy(gameObject);
+            Destroy(gameObject);
         }
     }
 }
