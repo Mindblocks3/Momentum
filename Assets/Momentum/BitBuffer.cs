@@ -223,6 +223,75 @@ namespace Mirage.Momentum
             WriteFloat(rotation.w);
         }
 
+        const float minimumRotation = - 1.0f / 1.414214f;       // 1.0f / sqrt(2)
+        const float maximumRotation = + 1.0f / 1.414214f;
+
+        public void WriteCompressedQuaternion(Quaternion rotation, int bits = 9) {
+            // write compressed quaterion using the smallest three
+            
+            // find the largest component
+            float largest = Mathf.Abs(rotation.x);
+            uint largestIndex = 0;
+            if (Mathf.Abs(rotation.y) > largest) {
+                largest = Mathf.Abs(rotation.y);
+                largestIndex = 1;
+            }
+            if (Mathf.Abs(rotation.z) > largest) {
+                largest = Mathf.Abs(rotation.z);
+                largestIndex = 2;
+            }
+            if (Mathf.Abs(rotation.w) > largest) {
+                largest = Mathf.Abs(rotation.w);
+                largestIndex = 3;
+            }
+
+            // write the largest index
+            Write(largestIndex, 2);
+
+            (float a, float b, float c) = largestIndex switch {
+                0 when rotation.x >= 0 => (rotation.y, rotation.z, rotation.w),
+                0 => (-rotation.y, -rotation.z, -rotation.w),
+                1 when rotation.y >= 0 => (rotation.x, rotation.z, rotation.w),
+                1 => (-rotation.x, -rotation.z, -rotation.w),
+                2 when rotation.z >= 0 => (rotation.x, rotation.y, rotation.w),
+                2 => (-rotation.x, -rotation.y, -rotation.w),
+                3 when rotation.w >= 0 => (rotation.x, rotation.y, rotation.z),
+                3 => (-rotation.x, -rotation.y, -rotation.z),
+                _ => throw new Exception("Invalid largest index")
+            };
+
+            float normal_a = (a - minimumRotation) / (maximumRotation - minimumRotation);
+            float normal_b = (b - minimumRotation) / (maximumRotation - minimumRotation);
+            float normal_c = (c - minimumRotation) / (maximumRotation - minimumRotation);
+
+            int scale = (1 << bits) - 1;
+            int quantized_a = (int)(normal_a * scale + 0.5f);
+            int quantized_b = (int)(normal_b * scale + 0.5f);
+            int quantized_c = (int)(normal_c * scale + 0.5f);
+
+            Write(quantized_a, bits);
+            Write(quantized_b, bits);
+            Write(quantized_c, bits);
+        }
+
+        public Quaternion ReadCompressedQuaternion(int bits = 9) {
+            uint largestIndex = (uint)ReadInternal(2);
+            float scale = (maximumRotation - minimumRotation) / ((1 << bits) - 1);
+            
+            float a = ReadInternal(bits) * scale + minimumRotation;
+            float b = ReadInternal(bits) * scale + minimumRotation;
+            float c = ReadInternal(bits) * scale + minimumRotation;
+            float d = Mathf.Sqrt(1 - a * a - b * b - c * c);
+
+            return largestIndex switch {
+                0 => new Quaternion(d, a, b, c),
+                1 => new Quaternion(a, d, b, c),
+                2 => new Quaternion(a, b, d, c),
+                3 => new Quaternion(a, b, c, d),
+                _ => throw new Exception("Invalid largest index")
+            };
+        }
+
         public Quaternion ReadQuaternion()
         {
             return new Quaternion(ReadFloat(), ReadFloat(), ReadFloat(), ReadFloat());

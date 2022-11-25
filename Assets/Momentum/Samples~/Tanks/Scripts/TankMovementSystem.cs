@@ -16,7 +16,7 @@ namespace Mirage.Examples.Tanks
             {
                 NetId = buffer.ReadUShort(),
                 position = buffer.ReadVector3(),
-                rotation = buffer.ReadQuaternion(),
+                rotation = buffer.ReadCompressedQuaternion(),
                 moveInput = buffer.ReadVector2(),
                 fireInput = buffer.ReadBool()
             };
@@ -27,7 +27,7 @@ namespace Mirage.Examples.Tanks
         {
             buffer.Write(objectState.NetId, 16);
             buffer.WriteVector3(objectState.position);
-            buffer.WriteQuaternion(objectState.rotation);
+            buffer.WriteCompressedQuaternion(objectState.rotation);
             buffer.WriteVector2(objectState.moveInput);
             buffer.WriteBoolean(objectState.fireInput);
         }

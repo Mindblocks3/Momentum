@@ -7,8 +7,8 @@ using System;
 
 public class Bandwidth : MonoBehaviour
 {
-    ExponentialMovingAverage receiveAverage = new ExponentialMovingAverage(30);
-    ExponentialMovingAverage sendAverage = new ExponentialMovingAverage(30);
+    ExponentialMovingAverage receiveAverage = new ExponentialMovingAverage(10);
+    ExponentialMovingAverage sendAverage = new ExponentialMovingAverage(10);
 
     public Transport transport;
     public Text text;

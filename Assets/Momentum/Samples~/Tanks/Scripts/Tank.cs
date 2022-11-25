@@ -62,7 +62,6 @@ namespace Mirage.Examples.Tanks
             // shoot
             if (FireInput && !prevFire)
             {
-                Debug.Log("Firing");
                 Fire();                
             }
             prevFire = FireInput;
